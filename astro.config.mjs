@@ -3,6 +3,7 @@ import { defineConfig } from 'astro/config';
 
 // https://astro.build/config
 export default defineConfig({
+	output: 'static',
 	// Astro 官方 i18n 配置
 	i18n: {
 		// 默认语言：中文
