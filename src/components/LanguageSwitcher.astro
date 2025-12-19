@@ -1,0 +1,76 @@
+---
+// URL 结构：
+//   /        -> zh（默认语言）
+//   /en/     -> en 首页
+//   /en/...  -> en 其他页面
+// 根据当前路径推断语言，并生成对应语言的链接。
+
+const url = Astro.url;
+const pathname = url.pathname;
+console.log(url);
+
+
+const isEnglish = pathname === '/en' || pathname.startsWith('/en/');
+let currentLocale: 'zh' | 'en' = isEnglish ? 'en' : 'zh';
+
+// 去掉 /en 前缀，得到基础路径（确保至少为 '/'）
+let basePath = isEnglish ? pathname.slice(3) : pathname; // removes '/en'
+if (!basePath || basePath.length === 0) basePath = '/';
+
+const targetLocale = currentLocale === 'zh' ? 'en' : 'zh';
+const targetHref =
+	targetLocale === 'en'
+		? `/en${basePath === '/' ? '/' : basePath}`
+		: basePath;
+
+const labels = {
+	zh: {
+		button: '切换为英文',
+	},
+	en: {
+		button: 'Switch to Chinese',
+	},
+};
+
+const text = labels[currentLocale].button;
+---
+
+<a
+	href={targetHref}
+	class="lang-switcher"
+	aria-label={text}
+>
+	🌐 {text}
+</a>
+
+<style>
+	.lang-switcher {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+		padding: 0.45rem 0.9rem;
+		border-radius: 999px;
+		border: 1px solid #e5e7eb;
+		background: #111827;
+		color: #fff;
+		font-size: 0.9rem;
+		text-decoration: none;
+		cursor: pointer;
+		transition: background 0.15s ease, transform 0.1s ease,
+			box-shadow 0.15s ease;
+		box-shadow: 0 8px 16px rgba(15, 23, 42, 0.15);
+	}
+
+	.lang-switcher:hover {
+		background: #0f172a;
+		transform: translateY(-1px);
+		box-shadow: 0 12px 22px rgba(15, 23, 42, 0.22);
+	}
+
+	.lang-switcher:active {
+		transform: translateY(0);
+		box-shadow: 0 4px 10px rgba(15, 23, 42, 0.2);
+	}
+</style>
+
+

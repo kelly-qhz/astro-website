@@ -1,0 +1,70 @@
+---
+// 接收自定义属性：动画类型、延迟、阈值
+interface Props {
+    animation?: "fade" | "slide-up" | "scale" | "rotate"; // 预设动画类型
+    delay?: number; // 动画延迟（ms）
+    threshold?: number; // 元素进入视口的比例（0-1，0=只要边缘进入，1=完全进入）
+}
+
+const { animation = "fade", delay = 0, threshold = 0.1 } = Astro.props;
+---
+
+<style>
+    /* 基础容器样式：初始隐藏 + 过渡 */
+    .scroll-animate {
+        opacity: 0;
+        transition: all 0.6s ease-out;
+        /* 初始状态根据动画类型定制 */
+        &.fade {
+            transform: translateY(20px);
+        }
+        &.slide-up {
+            transform: translateY(50px);
+        }
+        &.scale {
+            transform: scale(0.8);
+        }
+        &.rotate {
+            transform: rotate(-10deg) scale(0.9);
+        }
+    }
+
+    /* 动画触发后的状态 */
+    .scroll-animate.active {
+        opacity: 1;
+        transform: none; /* 重置所有变换 */
+    }
+</style>
+
+<!-- 动画容器：绑定动画类型 + 延迟 -->
+<div
+    class:list={["scroll-animate", animation]}
+    style={{ animationDelay: `${delay}ms` }}
+>
+    <slot />
+</div>
+
+<script define:vars={{ threshold }}>
+    // 客户端脚本：监听滚动 + 判断视口
+    document.addEventListener("DOMContentLoaded", () => {
+        const elements = document.querySelectorAll(".scroll-animate");
+
+        // 初始化 IntersectionObserver（性能优于 scroll 事件）
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        // 元素进入视口 → 添加 active 类触发动画
+                        entry.target.classList.add("active");
+                        // 只触发一次，触发后停止监听
+                        observer.unobserve(entry.target);
+                    }
+                });
+            },
+            { threshold },
+        ); // 传入阈值
+
+        // 监听所有动画元素
+        elements.forEach((el) => observer.observe(el));
+    });
+</script>

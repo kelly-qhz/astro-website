@@ -1,0 +1,26 @@
+---
+import LanguageChange from "@/components/LanguageChange.astro";
+import Layout from "@/layouts/Layout.astro";
+import { getMessages } from "@/i18n";
+import { getCollection } from "astro:content";
+// const allPosts = Object.values(
+// 	import.meta.glob("@/pages/posts/*.md", { eager: true }),
+// );
+const allPosts = await getCollection("blog");
+// console.log(allPosts);
+
+const { home: t } = getMessages(Astro.currentLocale);
+---
+
+<Layout title={t.title}>
+	<LanguageChange path="about" />
+	<ul>
+		{
+			allPosts.map((post: any) => (
+				<li>
+					<a href={`/posts/${post.id}/`}>{post.data.title}</a>
+				</li>
+			))
+		}
+	</ul>
+</Layout>

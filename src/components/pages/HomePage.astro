@@ -1,0 +1,55 @@
+---
+import LanguageSwitcher from "@/components/LanguageSwitcher.astro";
+import LanguageChange from "@/components/LanguageChange.astro";
+import Layout from "@/layouts/Layout.astro";
+import { getMessages } from "@/i18n";
+import ScrollAnimate from "@/components/ScrollAnimate.astro";
+
+const { home: t } = getMessages(Astro.currentLocale);
+---
+
+<Layout title={t.title}>
+	<main
+		style="max-width: 640px; margin: 4rem auto; padding: 0 1.5rem; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;"
+	>
+		<header
+			style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem;"
+		>
+			<h1 style="font-size: 2.4rem; margin: 0;">{t.heading}</h1>
+			<LanguageChange />
+		</header>
+
+		<p style="margin-bottom: 1.25rem; color: #4b5563;">
+			{t.currentLang}
+		</p>
+		{
+			t.descLines.map((line) => (
+				<p style="margin-bottom: 0.75rem; color: #4b5563;">{line}</p>
+			))
+		}
+	</main>
+
+	<div style="height: 100vh; background: #f5f5f5;">滚动向下查看动画</div>
+	<!-- 淡入动画 -->
+	<ScrollAnimate  client:visible animation="fade" delay={100}>
+		<h1 style="font-size: 3rem;">Fade 动画</h1>
+	</ScrollAnimate>
+	<!-- 上滑动画 -->
+	<ScrollAnimate client:visible animation="slide-up" delay={200} threshold={0.2}>
+		<div
+			style="width: 300px; height: 200px; background: #42b883; margin: 2rem 0;"
+		>
+			Slide Up 动画
+		</div>
+	</ScrollAnimate>
+	<!-- 缩放动画 -->
+	<ScrollAnimate client:visible animation="scale" delay={300}>
+		<p style="font-size: 1.2rem;">Scale 动画</p>
+	</ScrollAnimate>
+
+	<!-- 旋转动画 -->
+	<ScrollAnimate client:visible animation="rotate" delay={400}>
+		<button style="padding: 1rem 2rem; font-size: 1rem;">Rotate 动画</button
+		>
+	</ScrollAnimate>
+</Layout>

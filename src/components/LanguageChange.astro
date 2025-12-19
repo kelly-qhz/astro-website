@@ -1,0 +1,20 @@
+---
+import { getRelativeLocaleUrl } from "astro:i18n";
+const { path } = Astro.props;
+// 不带有参数和哈希的路由路径
+const enURL = getRelativeLocaleUrl("en", path);
+const zhURL = getRelativeLocaleUrl("zh", path);
+---
+
+<a href={enURL} id="lang-en">_English</a>
+<a href={zhURL} id="lang-zh">_中文</a>
+
+<!-- <script is:inline define:vars={{ enURL, zhURL }}>
+	// 保留查询参数与哈希
+	const search = window.location.search || "";
+	const hash = window.location.hash || "";
+
+	// 设置 a 标签的 href
+	document.querySelector("#lang-zh").href = zhURL + search + hash;
+	document.querySelector("#lang-en").href = enURL + search + hash;
+</script> -->

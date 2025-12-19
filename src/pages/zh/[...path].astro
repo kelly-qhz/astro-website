@@ -1,0 +1,21 @@
+---
+// 捕获 /zh/... 的访问并重定向到对应的中文默认路径
+export const prerender = false;
+
+const slugParam = Astro.params.path;
+const segments = Array.isArray(slugParam)
+	? slugParam
+	: slugParam
+	? [slugParam]
+	: [];
+
+let redirectPath = `/${segments.join('/')}`;
+if (redirectPath === '/' || redirectPath === '') {
+	redirectPath = '/';
+}
+
+const target = new URL(redirectPath, Astro.request.url);
+return Astro.redirect(target.toString(), 301);
+---
+
+
